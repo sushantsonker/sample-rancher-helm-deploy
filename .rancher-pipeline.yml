@@ -1,0 +1,8 @@
+stages:
+- name: Create Build Tag
+  steps:
+  - runScriptConfig:
+      image: jgreat/drone-build-tag:0.1.0
+      shellScript: build-tags.sh --include-feature-tag
+timeout: 60
+notification: {}
