@@ -1,17 +1,4 @@
 stages:
-- name: Create Build Tag
-  steps:
-  - runScriptConfig:
-      image: jgreat/drone-build-tag:0.1.0
-      shellScript: build-tags.sh --include-feature-tag
-- name: Build and Publish Image
-  steps:
-  - publishImageConfig:
-      dockerfilePath: ./Dockerfile
-      buildContext: .
-      tag: jgreat/vote-demo-web:use-tags-file
-      pushRemote: true
-      registry: index.docker.io      
 - name: Render and Publish Helm Charts
   steps:
   - runScriptConfig:
@@ -26,17 +13,5 @@ stages:
     - sourceName: chart-creds
       sourceKey: BASIC_AUTH_USER
       targetKey: HELM_REPO_USERNAME
-- name: Upgrade Catalog Apps
-  steps:
-  - runScriptConfig:
-      image: jgreat/rancher-pipeline-deploy:0.0.2
-      shellScript: rancher-pipeline-deploy
-    env:
-      RANCHER_CATALOG_NAME: vote-demo-web
-      RANCHER_URL: https://jgreat-vote-rancher.eng.rancher.space
-    envFrom:      
-    - sourceName: chart-creds
-      sourceKey: RANCHER_API_TOKEN
-      targetKey: RANCHER_API_TOKEN      
 timeout: 10
 notification: {}
