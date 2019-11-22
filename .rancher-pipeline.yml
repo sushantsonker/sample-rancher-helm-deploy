@@ -4,5 +4,22 @@ stages:
   - runScriptConfig:
       image: jgreat/drone-build-tag:0.1.0
       shellScript: build-tags.sh --include-feature-tag
-timeout: 60
+- name: Render and Publish Helm Charts
+  steps:
+  - runScriptConfig:
+      image: jgreat/rancher-pipeline-publish-chart:0.0.2
+      shellScript: publish-chart.sh
+    env:
+      HELM_REPO_URL: https://vote-demo-charts.eng.rancher.space/vote-demo-web/
+    envFrom:
+    - {}
+- name: Upgrade Catalog Apps
+  steps:
+  - runScriptConfig:
+      image: jgreat/rancher-pipeline-deploy:0.0.2
+      shellScript: rancher-pipeline-deploy
+    env:
+      RANCHER_CATALOG_NAME: vote-demo-web
+      RANCHER_URL: https://jgreat-vote-rancher.eng.rancher.space
+timeout: 10
 notification: {}
